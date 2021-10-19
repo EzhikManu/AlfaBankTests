@@ -26,6 +26,12 @@ public class AlfaBankTests {
     CredentialsConfig credentieals = ConfigFactory.create(CredentialsConfig.class);
     String login = credentieals.login();
     String password = credentieals.password();
+    void closeAd() {
+        if ($("#image-login").isDisplayed()) {
+            $(".widget__close").doubleClick();
+        }
+        else return;
+    }
     @BeforeEach
     void beforeEach() {
         SelenideLogger.addListener("AllureSelenide", new AllureSelenide());
@@ -38,7 +44,7 @@ public class AlfaBankTests {
     }
 
     @Test
-    @DisplayName("Test credit card application form with wrong tel. number")
+    @DisplayName("Проверка заполнения формы заявки на кредитную карту с неправильным телефоном")
     void testCreditCardApplicationForm0() {
         step("open main page and click 'Интернет-банк'", () -> {
                     open("https://alfabank.ru");
@@ -67,10 +73,10 @@ public class AlfaBankTests {
         step("check the message about invalid tel. number", () -> {
             $(".step1__client-contacts").$("[data-test-id=phone]").shouldHave(text("Телефон указан неверно. Некорректный код оператора."));
         });
-    }
+        }
 
     @Test
-    @DisplayName("Test search on the web-site")
+    @DisplayName("Тест поиска по сайту")
     void localSearch() {
         step("open main page", () -> {
             open("https://alfabank.ru");
@@ -84,7 +90,7 @@ public class AlfaBankTests {
         });
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "Проверка, что условие {0} тарифа \"просто 1%\" отображено на странице")
     @EnumSource(TariffConditions.class)
     @DisplayName("Test, that just 1% tariff condition {0} are on the page")
     void tariffConditionsTest(TariffConditions condition) {
@@ -93,6 +99,8 @@ public class AlfaBankTests {
             $(byText("Малому бизнесу и ИП")).click();
         });
         step("open just 1% tariff conditions", () -> {
+            sleep(5000);
+            closeAd();
             $$(byPartialLinkText("Подробнее")).first().click();
         });
         step("check, that all conditions are on the page", () -> {
@@ -101,6 +109,7 @@ public class AlfaBankTests {
         }
 
         @Test
+        @DisplayName("Тест кредитного калькулятора на главной старнице")
     void testCreditCalc() {
             step("open main page", () -> {
                 open("https://alfabank.ru");
@@ -119,6 +128,7 @@ public class AlfaBankTests {
         }
 
         @Test
+        @DisplayName("Проверка, что карта с указанием банкоматов отображается на странице")
     void testATMMap() {
             step("open main page", () -> {
                 open("https://alfabank.ru");

@@ -50,6 +50,7 @@ public class Attach {
             return new URL(videoUrl);
         } catch (MalformedURLException e) {
             e.printStackTrace();
+
         }
         return null;
     }
