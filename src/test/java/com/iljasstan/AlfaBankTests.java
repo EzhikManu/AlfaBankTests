@@ -1,13 +1,20 @@
 package com.iljasstan;
 
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.logevents.SelenideLogger;
 import com.iljasstan.enums.TariffConditions;
+import config.CredentialsConfig;
+import helpers.Attach;
+import io.qameta.allure.selenide.AllureSelenide;
+import org.aeonbits.owner.ConfigFactory;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
@@ -16,9 +23,18 @@ import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 
 public class AlfaBankTests {
+    CredentialsConfig credentieals = ConfigFactory.create(CredentialsConfig.class);
+    String login = credentieals.login();
+    String password = credentieals.password();
     @BeforeEach
     void beforeEach() {
+        SelenideLogger.addListener("AllureSelenide", new AllureSelenide());
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability("enableVNC", true);
+        capabilities.setCapability("enableVideo", true);
+        Configuration.browserCapabilities = capabilities;
         Configuration.startMaximized = true;
+        Configuration.remote = String.format("https://%s:%s@selenoid.autotests.cloud/wd/hub", login, password);
     }
 
     @Test
@@ -114,4 +130,10 @@ public class AlfaBankTests {
                 $(".ymaps-2-1-79-map").shouldBe(visible);
             });
         }
+    @AfterEach
+    void tearDown() {
+        Attach.screenshotAs("Last screenshot");
+        Attach.browserConsoleLogs();
+        Attach.addVideo();
+    }
     }
