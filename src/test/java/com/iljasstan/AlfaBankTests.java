@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.openqa.selenium.Keys;
 
 import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
@@ -98,6 +99,19 @@ public class AlfaBankTests {
             });
             step("check the monthly payment", () -> {
                 $$(".aJuYLG").first().shouldHave(text("63 900 ₽"));
+            });
+        }
+
+        @Test
+    void testATMMap() {
+            step("open main page", () -> {
+                open("https://alfabank.ru");
+            });
+            step("open page with ATM map", () -> {
+                $(byPartialLinkText("Банкоматы")).click();
+            });
+            step("check, that ATM map is visible", () -> {
+                $(".ymaps-2-1-79-map").shouldBe(visible);
             });
         }
     }
