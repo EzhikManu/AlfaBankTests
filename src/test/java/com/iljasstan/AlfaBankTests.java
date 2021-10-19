@@ -23,9 +23,6 @@ import static com.codeborne.selenide.Selenide.*;
 import static io.qameta.allure.Allure.step;
 
 public class AlfaBankTests {
-    CredentialsConfig credentieals = ConfigFactory.create(CredentialsConfig.class);
-    String login = credentieals.login();
-    String password = credentieals.password();
     void closeAd() {
         if ($("#image-login").isDisplayed()) {
             $(".widget__close").doubleClick();
@@ -40,7 +37,7 @@ public class AlfaBankTests {
         capabilities.setCapability("enableVideo", true);
         Configuration.browserCapabilities = capabilities;
         Configuration.startMaximized = true;
-        Configuration.remote = String.format("https://%s:%s@selenoid.autotests.cloud/wd/hub", login, password);
+        Configuration.remote = "http://161.35.194.216:8080/#/";
     }
 
     @Test
